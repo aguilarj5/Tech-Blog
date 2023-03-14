@@ -1,42 +1,19 @@
 const router = require('express').Router();
 const { Thread, User, Comment } = require('../models');
 
-// GET all galleries for homepage
+// GET all threads for homepage
 router.get('/', async (req, res) => {
 	try {
-		// const dbGalleryData = await Gallery.findAll({
-		// 	include: [
-		// 		{
-		// 			model: Painting,
-		// 			attributes: ['filename', 'description'],
-		// 		},
-		// 	],
-		// });
-
 		const dbThreadData = await Thread.findAll({
-			include: [
-				{
-					model: Comment,
-					attributes: ['text', 'created_at'],
-				},
-				{
-					model: User,
-					attributes: ['username'],
-				},
-			],
+			include: User,
 		});
 
-		const threads = dbThreadData.map((thread) => {
-			thread.get({ plain: true });
-		});
-
-		// const galleries = dbGalleryData.map((gallery) =>
-		// 	gallery.get({ plain: true })
-		// );
+		const threads = JSON.stringify(dbThreadData, null, 2);
+			
+		console.log(threads);
 
 		res.render('homepage', {
 			threads,
-			//galleries,
 			loggedIn: req.session.loggedIn,
 		});
 	} catch (err) {
